@@ -1,4 +1,3 @@
-
-#markdown: rdiscount
+markdown: rdiscount
 pygments: true
 lsi: false
