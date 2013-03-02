@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Mozilla Firefox 这些年对 JavaScript 的改进做了些什么？
+title: Mozilla Firefox 这些年为 JavaScript 的改进做了些什么？
 ---
 
 ### 序言
@@ -75,9 +75,131 @@ Array的 `join`, `reverse`, `sort`, `push`, `pop`, `shift`, `unshift`, `splice`,
 
 在1.7中，我们将看到更多地关于语言抽象能力的改进。
 
-#### 生成器与迭代器 Generators and Iterators
+#### 迭代器与生成器 Iterators and Generators
 
+##### 迭代器 Iterators
 
+我们知道在 JavaScript 1.5 中，很多对象是不支持迭代的，或者是使用`for...in`迭代的时候，行为会不尽如人意，甚至很根本无用。例如：
+{% highlight js %}
+var arr = [2, 4, 5, 6],
+	obj = {
+		"version": "1.7",
+		"platform": "firefox",
+		"standard": false
+	};
+
+for (var i in arr) {
+	console.log(i); //0, 1, 2, 3 ！！！无用
+}
+
+for (var key in obj) {
+	var v = obj[key]; // 需要通过obj再取一次值，不能把key-value pair一次性取出来
+	console.log(v);
+}
+{% endhighlight %}
+
+在这个版本中，通过使用`Iterator(obj[, indexOnly])`方法，我们则能得到更合理的迭代效果。`Iterator`方法返回一个`Iterator`对象，我们可以对它进行`next()`操作，`next()`操作默认一个键与值组成的数组。`Iterator`的第二个参数默认为`false`。如果为`true`的话，则表示只返回`index`, 亦即 `Array`的索引或者`Object`的属性名称。
+{% highlight js %}
+var itArr1 = Iterator(arr),
+	itObj1 = Iterator(obj),
+	itArr2 = Iterator(arr, true),
+	itObj2 = Iterator(obj, true);
+
+console.log(itArr1.next()); // [0, 2]
+console.log(itObj1.next()); // ["version": "1.7"]
+
+console.log(itArr2.next()); // 0
+console.log(itObj2.next()); // "version"
+{% endhighlight %}
+
+当所有元素迭代完后，继续调用`next()`方法，则会抛出`StopIteration`异常。
+{% highlight js %}
+var itObj = Iterator(obj);
+
+try {
+	console.log(itObj.next()); // ["version": "1.7"]
+	console.log(itObj.next()); // ["platform": "firefox"]
+	console.log(itObj.next()); // ["standard": false]
+	console.log(itObj.next()); // throw StopIteration
+} catch (err) {
+	if(err instanceof StopIteration) {
+		console.log("End of record.\n");
+	}
+}
+{% endhighlight %}
+
+除了使用`next()`之外，还可以针对iterator进行`for...in`操作。`for...in`内部会自动调用`next()`方法，并在遇到`StopIteration`时，遍历终止。
+{% highlight js %}
+for (var kv in Iterator(arr)) {
+	console.log(kv); // kv 为索引值与具体值的组成的数组，如[0, 2]
+}
+
+for (var kv in Iterator(obj)) {
+	console.log("Key: " + kv[0] + ",\tValue: " + kv[1]); // kv 为 obj 属性名与值缓存的数组
+}
+{% endhighlight %}
+
+##### 自定义迭代器
+
+现在假定我们有一个`Range`的数据结构，表示指定两个指定的数字left到right的区间。如果使用默认的`Iterator`方法构造迭代器的话，我们只能拿到它的left与right这两个属性与相应的值，而这确不是我们所想要的。我们需要的是left与right之间的数集。
+{% highlight js %}
+function Range(left, right) {
+	this.left = left;
+	this.right = right;
+}
+
+var rng = new Range(1, 5);
+for (var key in Iterator(rng)) {
+	console.log(key); //["left", 1] & ["right", 5]
+}
+{% endhighlight %}
+
+因此我们需要构造自定义的迭代器，这可以通过设置原型链中的`__iterator__`方法来实现。当然，根据我们上面的描述，迭代器有一个叫做`next()`的方法，并且在迭代完所有元素后继续被调用的情况下抛出`StopIteration`的异常。
+{% highlight js %}
+function RangeIterator(range){
+	this.range = range;
+	this.current = this.range.left;
+}
+RangeIterator.prototype.next = function(){
+	if(this.current > this.range.right) {
+		throw StopIteration;
+	}
+
+	return this.current++;
+};
+Range.prototype.__iterator__ = function(){
+	return new RangeIterator(this);
+};
+
+var rng = new Range(1, 5);
+
+var it = rng.__iterator__();
+console.log(it.next()); // 1
+
+for (var v in rng) { //直接对对象进行迭代，不再需要Iterator
+	console.log(v); //1, 2, 3, 4, 5
+}
+{% endhighlight %}
+
+我们可以知道，当使用`for...in`时，不再需要用使用`Iterator()`方法，`for...in`内部会去调用对象的`__iterator__()`方法拿到一个新的迭代器，并调用`next()`进行遍历。
+
+##### 生成器 Generators
+
+在上面我们看到，其实`RangeIterator`就是一个迭代器的生成器，简称生成器。在这一小节中，我们将看到Firefox给我们带来的一种更优的迭代器的生成器的做法--在语言层面引入对`yield`关键字的支持。
+
+根据MDN[2]的解释，被调用的方法并不会一次性执行完(被`yield`给驻留了)，返回生成-迭代器。每次调用返回结果的`next()`方法都会停留在`yield`表达式处，并返回指定的值。而当方法执行到末尾，或者遇到了 `return` 语句时，`StopIteration` 会被自动抛出。因此，我们需要做的就是，给`__iterator__`设置成一个带`yield`的方法就行了。
+
+> When a generator function is called the body of the function does not execute straight away; instead, it returns a generator-iterator object. Each call to the generator-iterator's next() method will execute the body of the function up to the next yield expression and return its result. When either the end of the function or a return statement is reached, a StopIteration exception is thrown.
+
+{% highlight js %}
+Range.prototype.__iterator__ = function(){
+	for (var i = this.left; i <= this.right; i++) {
+		yield i;
+	}
+};
+{% endhighlight %}
+
+从这部分我们看到，通过引入`yield`，JavaScript的迭代也变得相当方便并且实用起来。
 
 #### Array comprehensions
 
@@ -91,3 +213,6 @@ Array的 `join`, `reverse`, `sort`, `push`, `pop`, `shift`, `unshift`, `splice`,
 ### JavaScript 1.8 的改进
 
 ### 结语
+
+[1]: https://developer.mozilla.org/en-US/docs/JavaScript/New_in_JavaScript/1.7#Generators_and_iterators_(merge_into_Iterators_and_Generators) "Generators and Iterators in JavaScript 1.7"
+[2]: https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Iterators_and_Generators#Generators.3A_a_better_way_to_build_Iterators "Generators: a better way to build Iterators"
