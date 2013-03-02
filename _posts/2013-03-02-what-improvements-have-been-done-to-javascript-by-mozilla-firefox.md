@@ -232,7 +232,7 @@ console.log(doubled);
 console.log(doubledEvenNums);
 {% endhighlight %}
 
-在该语法中，由于要用到`for...in`进行迭代，故而，我们可以从任意可以进行迭代的对象中快速地创建出新数据，对比下述代码，我相信你更能相信这种写法有多便利(1行代码 vs. 4行)。
+在该语法中，由于要用到`for...in`进行迭代，故而，我们可以从任意可以进行迭代的对象中快速地创建出新数组，对比下述代码，我相信你更能相信这种写法有多便利(1行代码 vs. 6行)。
 
 {% highlight js %}
 var rng = new Range(1, 5),
