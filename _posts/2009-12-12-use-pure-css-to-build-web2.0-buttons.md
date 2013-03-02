@@ -38,10 +38,10 @@ CSS如下:
 
 {% highlight css %}
 .orange{
-    background: #FF5C00 url(images/light-overlay.png) repeat-x scroll 0 0;
+	background: #FF5C00 url(images/light-overlay.png) repeat-x scroll 0 0;
 }
 .orange:hover {
-    background-color: #D45500;
+	background-color: #D45500;
 }
 {% endhighlight %}
 
@@ -58,8 +58,8 @@ CSS如下:
 
 {% highlight css %}
 .orange{
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 }
 {% endhighlight %}
 
@@ -86,7 +86,7 @@ CSS如下:
 嗯，阴影有了，写法如此简单。什么？文字不够2.0？好吧，继续加码：
 {% highlight css %}
 orange {
-    text-shadow: 0 -1px 1px rgba(0,0,0,0.8);
+	text-shadow: 0 -1px 1px rgba(0,0,0,0.8);
 }
 {% endhighlight %}
 
@@ -101,56 +101,56 @@ text-shadow的写法可以参考[text-shadow](https://developer.mozilla.org/en/C
 最终的CSS代码如下:
 {% highlight css %}
 .orange,.magenta,.blue,.green,.red {
-    display: inline-block;
-    width: 150px;
-    height: 36px;
-    line-height: 36px;
-    color: #ffffff;
-    text-decoration: none;
-    text-align: center;
-    font-family: "Courier New", Courier, monospace;
+	display: inline-block;
+	width: 150px;
+	height: 36px;
+	line-height: 36px;
+	color: #ffffff;
+	text-decoration: none;
+	text-align: center;
+	font-family: "Courier New", Courier, monospace;
 
-    font-weight: bold;    
-    background: transparent url(images/light-overlay.png) repeat-x scroll 0 0;
-    margin: 5px;
-    border-bottom: 1px solid rgba(0,0,0,0.25);
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	font-weight: bold;	  
+	background: transparent url(images/light-overlay.png) repeat-x scroll 0 0;
+	margin: 5px;
+	border-bottom: 1px solid rgba(0,0,0,0.25);
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 
-    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-    text-shadow: 0 -1px 1px rgba(0,0,0,0.8);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	text-shadow: 0 -1px 1px rgba(0,0,0,0.8);
 }
 
 .orange {
-    background-color: #FF5C00;
+	background-color: #FF5C00;
 }
 .orange:hover {
-    background-color: #D45500;
+	background-color: #D45500;
 }
 .blue {
-    background-color: #2DAEBF;
+	background-color: #2DAEBF;
 }
 .blue:hover {
-    background-color: #007D9A;
+	background-color: #007D9A;
 }
 .green {
-    background-color: #91BD09;
+	background-color: #91BD09;
 }
 .green:hover {
-    background-color: #749A02;
+	background-color: #749A02;
 }
 .red{
-    background-color:#E33100;
+	background-color:#E33100;
 }
 .red:hover {
-    background-color:#872300;
+	background-color:#872300;
 }
 .magenta{
-    background-color:#A9014B;
+	background-color:#A9014B;
 }
 .magenta:hover {
-    background-color:#630030;
+	background-color:#630030;
 }
 {% endhighlight %}
 
@@ -159,47 +159,47 @@ Html是酱子的:
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-     <title>使用比较纯的CSS创建很Web2.0的按钮</title>
-     <style type="text/css">
+	 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+	 <title>使用比较纯的CSS创建很Web2.0的按钮</title>
+	 <style type="text/css">
  .white-area,.dark-area {
-     padding: 10px;
-     margin: 0px;
-     -moz-border-radius: 5px;
-     -webkit-border-radius: 5px;
+	 padding: 10px;
+	 margin: 0px;
+	 -moz-border-radius: 5px;
+	 -webkit-border-radius: 5px;
  }
  .white-area {
-     background-color: #ffffff;
+	 background-color: #ffffff;
  }
  .dark-area {
-     background-color: #333333;
+	 background-color: #333333;
  }
  .columns {
-     float: left;
-     margin-left: 10px;
+	 float: left;
+	 margin-left: 10px;
  }
  .clear {
-     clear: both;
+	 clear: both;
  }
 </style>
-     <link rel="stylesheet" href="css3buttons.css" charset="utf-8" />
+	 <link rel="stylesheet" href="css3buttons.css" charset="utf-8" />
 </head>
 
 <body>
-     <div class="white-area">
-          <a href="javascript:void(0);" class="orange">Web 2.0</a>
-          <a href="javascript:void(0);" class="magenta">Web 2.0</a>
-          <a href="javascript:void(0);" class="red">Web 2.0</a>
-          <a href="javascript:void(0);" class="blue">Web 2.0</a>
-          <a href="javascript:void(0);" class="green">Web 2.0</a>
-     </div>
-     <div class="dark-area">
-          <a href="javascript:void(0);" class="orange">Web 2.0</a>
-          <a href="javascript:void(0);" class="magenta">Web 2.0</a>
-          <a href="javascript:void(0);" class="red">Web 2.0</a>
-          <a href="javascript:void(0);" class="blue">Web 2.0</a>
-          <a href="javascript:void(0);" class="green">Web 2.0</a>
-     </div>
+	 <div class="white-area">
+		  <a href="javascript:void(0);" class="orange">Web 2.0</a>
+		  <a href="javascript:void(0);" class="magenta">Web 2.0</a>
+		  <a href="javascript:void(0);" class="red">Web 2.0</a>
+		  <a href="javascript:void(0);" class="blue">Web 2.0</a>
+		  <a href="javascript:void(0);" class="green">Web 2.0</a>
+	 </div>
+	 <div class="dark-area">
+		  <a href="javascript:void(0);" class="orange">Web 2.0</a>
+		  <a href="javascript:void(0);" class="magenta">Web 2.0</a>
+		  <a href="javascript:void(0);" class="red">Web 2.0</a>
+		  <a href="javascript:void(0);" class="blue">Web 2.0</a>
+		  <a href="javascript:void(0);" class="green">Web 2.0</a>
+	 </div>
 </body>
 </html>
 {% endhighlight %}
