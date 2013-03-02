@@ -16,7 +16,7 @@ title: Mozilla Firefox 这些年为 JavaScript 的改进做了些什么？
 
 从那个时刻起，经过业界同僚的不断努力，JavaScript才真正慢慢变得强大了起来。而最先得到改善的还是体现在对库与方法的扩展上。[Prototype](http://prototypejs.org/), [jQuery](http://jquery.org/), [MooTools](http://mootools.net/), [YUI](http://yuilibrary.com/), [underscroe](https://github.com/documentcloud/underscore), [RequireJs](http://requirejs.org/), [SeaJs](http://seajs.org/docs/), [Wind.js](http://windjs.org/cn/)等各式各样的框架或者库出现在了大家的视野中。
 笔者早期是从接触Prototype开始的，而后由于Prototype篡改原生对象的做法越来越受人诟病，才将其抛弃。而像underscore这种以第三方库的形式(占用一个全局变量)对JavaScript进行扩展的方法，则更能被人所接受。
-总体来说，现在的第三方库与方法，足以支持日常工作的绝大部门需求。
+总体来说，现在的第三方库与方法，足以支持日常工作的绝大部分需求。
 
 然后比较令人失望的是，在经过了将近8个年头后，JavaScript语言的抽象能力却几乎没有得到任何提升，如今的语法还是当年的语法。这导致了笔者对姿态优雅的[CoffeeScript](http://coffeescript.org/)有着百般好感。
 
@@ -98,7 +98,7 @@ for (var key in obj) {
 }
 {% endhighlight %}
 
-在这个版本中，通过使用`Iterator(obj[, indexOnly])`方法，我们则能得到更合理的迭代效果。`Iterator`方法返回一个`Iterator`对象，我们可以对它进行`next()`操作，`next()`操作默认一个键与值组成的数组。`Iterator`的第二个参数默认为`false`。如果为`true`的话，则表示只返回`index`, 亦即 `Array`的索引或者`Object`的属性名称。
+在这个版本中，通过使用`Iterator(obj[, indexOnly])`方法，我们则能得到更合理的迭代效果。`Iterator`方法返回一个`Iterator`对象，我们可以对它进行`next()`操作，`next()`操作默认返回一个键与值组成的数组。`Iterator`的第二个参数默认为`false`，如果为`true`的话，则表示只遍历`index`, 亦即 `Array`的索引或者`Object`的属性名称。
 {% highlight js %}
 var itArr1 = Iterator(arr),
 	itObj1 = Iterator(obj),
@@ -141,7 +141,7 @@ for (var kv in Iterator(obj)) {
 
 ##### 自定义迭代器
 
-现在假定我们有一个`Range`的数据结构，表示指定两个指定的数字left到right的区间。如果使用默认的`Iterator`方法构造迭代器的话，我们只能拿到它的left与right这两个属性与相应的值，而这确不是我们所想要的。我们需要的是left与right之间的数集。
+现在假定我们有一个`Range`的数据结构，表示指定两个指定的数字left到right的区间。如果使用默认的`Iterator`方法构造迭代器的话，我们只能拿到它的left与right这两个属性与相应的值，而这不是我们所想要的。我们需要的是left与right之间的数集。
 {% highlight js %}
 function Range(left, right) {
 	this.left = left;
@@ -187,7 +187,7 @@ for (var v in rng) { //直接对对象进行迭代，不再需要Iterator
 
 在上面我们看到，其实`RangeIterator`就是一个迭代器的生成器，简称生成器。在这一小节中，我们将看到Firefox给我们带来的一种更优的迭代器的生成器的做法--在语言层面引入对`yield`关键字的支持。
 
-根据MDN[2]的解释，被调用的方法并不会一次性执行完(被`yield`给驻留了)，返回生成-迭代器。每次调用返回结果的`next()`方法都会停留在`yield`表达式处，并返回指定的值。而当方法执行到末尾，或者遇到了 `return` 语句时，`StopIteration` 会被自动抛出。因此，我们需要做的就是，给`__iterator__`设置成一个带`yield`的方法就行了。
+根据MDN[2]的解释，当一个生成器被调用时，它并没有一次性执行完(被`yield`给驻留了)，就则会返回生成器-迭代器对象实例。调用返回结果的`next()`方法都会停留在`yield`表达式处，并返回指定的值。而当方法执行到末尾，或者遇到了 `return` 语句时，`StopIteration` 会被自动抛出。因此，我们需要做的就是，给`__iterator__`设置成一个带`yield`的方法就行了（当然没有`yield`也行，视为只有一个元素）。
 
 > When a generator function is called the body of the function does not execute straight away; instead, it returns a generator-iterator object. Each call to the generator-iterator's next() method will execute the body of the function up to the next yield expression and return its result. When either the end of the function or a return statement is reached, a StopIteration exception is thrown.
 
@@ -210,7 +210,7 @@ var nums = [1, 2, 3, 4, 5],
 console.log(doubled); // [2, 4, 6, 8, 10]
 {% endhighlight %}
 
-“Pythonic!”，当我看到这代码的时候，脑海中出现的第一个词就是这个。如果你也了解Python的话，我想你一对会这种写法称赞不已！
+“Pythonic!”，当看到这代码的时候，我脑海中出现的第一个词就是这个。如果你也了解Python的话，我想你一对会这种写法称赞不已！
 
 {% highlight js %}
 var nums = [1, 2, 3, 4, 5],
@@ -218,9 +218,9 @@ var nums = [1, 2, 3, 4, 5],
 console.log(doubledEvenNums); // [4, 8]
 {% endhighlight %}
 
-Pythonic!!!还支持 if 筛选。
+Pythonic!!! 还支持 if 筛选！！！
 
-由此，我们不难发觉，Firefox 为我们提供了一种类似Python一样的语法，以支持从一个数组中快速构建出另一个数组来。而这种写法可以用1.6中的`filter()`或者`map()`一次、多次甚至是组合操作来完成。例如上述两段代码则可以通过如下代码来完成：
+由此，我们不难发觉，Firefox 为我们提供了一种类似Python一样的语法来写JavaScript，以支持从一个数组中快速构建出另一个数组来。而这种写法可以用1.6中的`filter()`或者`map()`一次、多次甚至是组合操作来完成。例如上述两段代码则可以通过如下代码来完成：
 {% highlight js %}
 var nums = [1, 2, 3, 4, 5],
 	doubleFunc = function(item) { return item * 2; },
