@@ -203,11 +203,55 @@ Range.prototype.__iterator__ = function(){
 
 #### Array comprehensions
 
+在了解什么是Array comprehension之前，我们来看一下相应的代码：
+{% highlight js %}
+var nums = [1, 2, 3, 4, 5],
+	doubled = [kv[1] * 2 for (kv in Iterator(nums))];
+console.log(doubled); // [2, 4, 6, 8, 10]
+{% endhighlight %}
+
+“Pythonic!”，当我看到这代码的时候，脑海中出现的第一个词就是这个。如果你也了解Python的话，我想你一对会这种写法称赞不已！
+
+{% highlight js %}
+var nums = [1, 2, 3, 4, 5],
+	doubledEvenNums = [kv[1] * 2 for (kv in Iterator(nums)) if (kv[1] % 2 === 0)];
+console.log(doubledEvenNums); // [4, 8]
+{% endhighlight %}
+
+Pythonic!!!还支持 if 筛选。
+
+由此，我们不难发觉，Firefox 为我们提供了一种类似Python一样的语法，以支持从一个数组中快速构建出另一个数组来。而这种写法可以用1.6中的`filter()`或者`map()`一次、多次甚至是组合操作来完成。例如上述两段代码则可以通过如下代码来完成：
+{% highlight js %}
+var nums = [1, 2, 3, 4, 5],
+	doubleFunc = function(item) { return item * 2; },
+	isEventNumFilter = function(item) { return item % 2 === 0; },
+	doubled = nums.map(doubleFunc),
+	doubledEvenNums = nums.filter(isEventNumFilter).map(doubleFunc);
+
+console.log(doubled);
+console.log(doubledEvenNums);
+{% endhighlight %}
+
+在该语法中，由于要用到`for...in`进行迭代，故而，我们可以从任意可以进行迭代的对象中快速地创建出新数据，对比下述代码，我相信你更能相信这种写法有多便利(1行代码 vs. 4行)。
+
+{% highlight js %}
+var rng = new Range(1, 5),
+	doubleFunc = function(item) { return item * 2; },
+	isEventNumFilter = function(item) { return item % 2 === 0; }
+	doubledEvenNumsQuickly = [doubleFunc(v) for (v in rng) if (isEventNumFilter(v))],
+	doubledEvenNumsTraditional = [];
+
+for(var v in rng) {
+	if(isEventNumFilter(v)) {
+		doubledEvenNumsTraditional.push(doubleFunc(v));
+	}
+}
+{% endhighlight %}
+
+
+#### 数组即元组
 
 #### let 关键字
-
-
-#### 数组既元组
 
 
 ### JavaScript 1.8 的改进
