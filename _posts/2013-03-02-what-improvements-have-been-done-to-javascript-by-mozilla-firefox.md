@@ -375,6 +375,12 @@ console.log(b) // 4
 console.log(d) // undefined
 {% endhighlight %}
 
+
+#### JavaScript 1.7 小结
+
+我们看到，在1.7中，Firefox 为我们提供了更多种优雅的写法，来书写迭代方法，借助`let`使用区块变量，甚至是像使写 Python 代码一样来把数组当元组使用。这些改进，在很大程序上提升了语言的抽象能力。
+
+
 ### JavaScript 1.8 的改进
 
 ### 结语
