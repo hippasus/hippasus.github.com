@@ -237,7 +237,7 @@ console.log(doubledEvenNums);
 {% highlight js %}
 var rng = new Range(1, 5),
 	doubleFunc = function(item) { return item * 2; },
-	isEventNumFilter = function(item) { return item % 2 === 0; }
+	isEventNumFilter = function(item) { return item % 2 === 0; },
 	doubledEvenNumsQuickly = [doubleFunc(v) for (v in rng) if (isEventNumFilter(v))],
 	doubledEvenNumsTraditional = [];
 
@@ -337,13 +337,13 @@ a, b, c = f() //a, b, c 分别被赋值成 3, 4, 5
 再来看看在 JavaScript 中如何来写类似的代码。
 
 {% highlight js %}
-[a, b] = [3, 4]
-console.log(a) // 3
-console.log(b) // 4
+[a, b] = [3, 4];
+console.log(a); // 3
+console.log(b); // 4
 
-[a, b] = [b, a]
-console.log(a) // 4
-console.log(b) // 3
+[a, b] = [b, a];
+console.log(a); // 4
+console.log(b); // 3
 
 function f() {
 	return [3, 4, 5];
@@ -357,22 +357,22 @@ How Pythonic! 我们在JavaScript中可以直接把数组当元组来使用。
 当然，我们也得小心，不要被下面代码迷惑了。
 
 {% highlight js %}
-a, b = [3, 4]
-console.log(a) // 3?
-console.log(b) // 4?
+a, b = [3, 4];
+console.log(a); // 3?
+console.log(b); // 4?
 
-a, b = b, a 	// swap?
+a, b = b, a;	// swap?
 {% endhighlight %}
 
 在MDC的文档中，提取数组元素的过程，叫做Destructuring assignment。在该过程中，与Python不同的是，JavaScript不要求操作左右两边的数据个数一致。如在Python中`a, b = (3, 4, 5)`会报错，而在JavaScript中则不会，见如下代码:
 
 {% highlight js %}
-[a, b] = [3, 4, 5]
-console.log(a) // 3
-console.log(b) // 4
+[a, b] = [3, 4, 5];
+console.log(a); // 3
+console.log(b); // 4
 
-[a, b, c, d] = [3, 4, 5]
-console.log(d) // undefined
+[a, b, c, d] = [3, 4, 5];
+console.log(d); // undefined
 {% endhighlight %}
 
 
