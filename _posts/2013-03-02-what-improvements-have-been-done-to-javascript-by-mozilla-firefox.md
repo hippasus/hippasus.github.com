@@ -187,7 +187,7 @@ for (var v in rng) { //直接对对象进行迭代，不再需要Iterator
 
 在上面我们看到，其实`RangeIterator`就是一个迭代器的生成器，简称生成器。在这一小节中，我们将看到Firefox给我们带来的一种更优的迭代器的生成器的做法--在语言层面引入对`yield`关键字的支持。
 
-根据MDN[2]的解释，当一个依赖于`yield`的生成器被调用时，它内部的代码并没有（必须不能）被直接执行完(被`yield`给驻留了)，就则会返回迭代器对象实例。同大多数现代语言一样，这时候程序的控制权被转交给了调用方。调用方负责调用返回结果的`next()`方法，`next()`方法会停留在下一个`yield`表达式处，并返回指定的值。当生成器方法执行到末尾，或者遇到了 `return` 语句时，`StopIteration` 会被自动抛出。因此，我们需要做的就是，给`__iterator__`设置成一个带`yield`的方法就行了。
+根据MDN[2]的解释，当一个依赖于`yield`的生成器被调用时，它内部的代码并没有（必须不能）被直接执行完(被`yield`给驻留了)，并会返回迭代器对象实例。同大多数现代语言中`yield`的用法一样，这时候程序的控制权被转交给了调用方。调用方负责调用返回结果的`next()`方法，`next()`方法会停留在下一个`yield`表达式处，并返回指定的值。当生成器方法执行到末尾，或者遇到了 `return` 语句时，`StopIteration` 会被自动抛出。因此，我们需要做的就是，给`__iterator__`设置成一个带`yield`语句的方法就行了。
 
 > When a generator function is called the body of the function does not execute straight away; instead, it returns a generator-iterator object. Each call to the generator-iterator's next() method will execute the body of the function up to the next yield expression and return its result. When either the end of the function or a return statement is reached, a StopIteration exception is thrown.
 
@@ -218,7 +218,7 @@ var nums = [1, 2, 3, 4, 5],
 console.log(doubledEvenNums); // [4, 8]
 {% endhighlight %}
 
-Pythonic!!! 还支持 if 筛选！！！
+Pythonic！！！ 还支持 if 筛选！！！
 
 由此，我们不难发觉，Firefox 为我们提供了一种类似Python一样的语法来写JavaScript，以支持从一个数组中快速构建出另一个数组来。而这种写法可以用1.6中的`filter()`或者`map()`一次、多次甚至是组合操作来完成。例如上述两段代码则可以通过如下代码来完成：
 {% highlight js %}
@@ -232,7 +232,7 @@ console.log(doubled);
 console.log(doubledEvenNums);
 {% endhighlight %}
 
-在该语法中，由于要用到`for...in`进行迭代，故而，我们可以从任意可以进行迭代的对象中快速地创建出新数组，对比下述代码，我相信你更能相信这种写法有多便利(1行代码 vs. 6行)。
+在该语法中，由于要用到`for...in`进行迭代，故而，我们可以从任意可以进行迭代的对象中快速地创建出新数组，对比下述代码，我相信你更能相信这种写法有多便利(1行 vs. 6行代码)。
 
 {% highlight js %}
 var rng = new Range(1, 5),
