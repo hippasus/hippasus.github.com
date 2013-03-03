@@ -313,6 +313,67 @@ g = "global";
 
 #### 数组即元组
 
+在介绍本部分内容之前，我们先来了解一下什么是元组（Tuple，也叫多元组，N元组）。按照维基百科上的解释[4]，元组是对象个数有限的序列，它由三部分组成：边界符、分隔符和元素。通常采用的边界符是小括号“()”，分隔符是逗号。比如`(22.3000° N, 114.1667° E)`这个经纬坐标就是一个元组。
+
+我们再以Python代码为例，看看如何来提取元组内的数据，以及元组如何给我们提供便利。
+
+{% highlight python %}
+(a, b) = (3, 4) // 一般会写成 a, b = 3, 4
+print a // 3
+print b // 4
+
+a, b = b, a // swap
+print a // 4
+print b // 3
+
+def f():
+	return (3, 4, 5) //返回元组
+
+a, b, c = f() //a, b, c 分别被赋值成 3, 4, 5
+{% endhighlight %}
+
+我们看到，提取元组内数据的代码相当简洁直观。在上面的方法`f()`中，利用元组，我们相当于在某种程序上返回了多个值。
+
+再来看看在 JavaScript 中如何来写类似的代码。
+
+{% highlight js %}
+[a, b] = [3, 4]
+console.log(a) // 3
+console.log(b) // 4
+
+[a, b] = [b, a]
+console.log(a) // 4
+console.log(b) // 3
+
+function f() {
+	return [3, 4, 5];
+}
+
+[a, b, c] = f(); // a, b, c 分别被赋值成 3, 4, 5
+{% endhighlight %}
+
+How Pythonic! 我们在JavaScript中可以直接把数组当元组来使用。
+
+当然，我们也得小心，不要被下面代码所迷惑了。
+
+{% highlight js %}
+a, b = [3, 4]
+console.log(a) // 3?
+console.log(b) // 4?
+
+a, b = b, a 	// swap?
+{% endhighlight %}
+
+在MDC的文档中，提取数组元素的过程，叫做Destructuring assignment。在提该过程中，与Python不同的时，JavaScript不限制操作左右两边的数据个数一致。如在Python中`a, b = (3, 4, 5)`会报错，而在JavaScript中则不会，见如下代码:
+
+{% highlight js %}
+[a, b] = [3, 4, 5]
+console.log(a) // 3
+console.log(b) // 4
+
+[a, b, c, d] = [3, 4, 5]
+console.log(d) // undefined
+{% endhighlight %}
 
 ### JavaScript 1.8 的改进
 
@@ -321,3 +382,4 @@ g = "global";
 [1]: https://developer.mozilla.org/en-US/docs/JavaScript/New_in_JavaScript/1.7#Generators_and_iterators_(merge_into_Iterators_and_Generators) "Generators and Iterators in JavaScript 1.7"
 [2]: https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Iterators_and_Generators#Generators.3A_a_better_way_to_build_Iterators "Generators: a better way to build Iterators"
 [3]: https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Statements/let#Description "let description"
+[4]: http://zh.wikipedia.org/wiki/%E5%A4%9A%E5%85%83%E7%BB%84 "元组 - 维基百科"
