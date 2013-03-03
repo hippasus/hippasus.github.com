@@ -1,3 +1,6 @@
+name: Hippasus' Thoughts
+description: Hippasus's personal blog.
+url: http://hippasus.github.com
 markdown: rdiscount
 pygments: true
 lsi: false

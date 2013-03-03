@@ -430,3 +430,5 @@ Small Device Styles
 
 .post-content{ padding: 5px; margin-top: 5px; margin-bottom: 15px; box-shadow: 0px 0px 8px 2px #888; -moz-box-shadow: 0px 0px 8px 2px #888; -webkit-box-shadow: 0px 0px 8px 2px #888; }
 .date {color: #bdbdbd; font: italic 12px/1.5 Consolas;}
+
+.rss-link { display: inline-block; float: right; line-height: 24px; padding-left: 24px; background: transparent url(/images/rss.gif) no-repeat left center;}
