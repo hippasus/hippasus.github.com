@@ -332,7 +332,7 @@ def f():
 a, b, c = f() //a, b, c 分别被赋值成 3, 4, 5
 {% endhighlight %}
 
-我们看到，提取元组内数据的代码相当简洁直观。在上面的方法`f()`中，利用元组，我们相当于在某种程序上返回了多个值。
+我们看到，提取元组内数据的代码相当简洁直观。在上面的方法`f()`中，利用元组，我们相当于在某种程度上返回了多个值。
 
 再来看看在 JavaScript 中如何来写类似的代码。
 
@@ -364,7 +364,7 @@ console.log(b) // 4?
 a, b = b, a 	// swap?
 {% endhighlight %}
 
-在MDC的文档中，提取数组元素的过程，叫做Destructuring assignment。在提该过程中，与Python不同的时，JavaScript不限制操作左右两边的数据个数一致。如在Python中`a, b = (3, 4, 5)`会报错，而在JavaScript中则不会，见如下代码:
+在MDC的文档中，提取数组元素的过程，叫做Destructuring assignment。在该过程中，与Python不同的是，JavaScript不要求操作左右两边的数据个数一致。如在Python中`a, b = (3, 4, 5)`会报错，而在JavaScript中则不会，见如下代码:
 
 {% highlight js %}
 [a, b] = [3, 4, 5]
