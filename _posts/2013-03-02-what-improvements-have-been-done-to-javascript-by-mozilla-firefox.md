@@ -187,7 +187,7 @@ for (var v in rng) { //直接对对象进行迭代，不再需要Iterator
 
 在上面我们看到，其实`RangeIterator`就是一个迭代器的生成器，简称生成器。在这一小节中，我们将看到Firefox给我们带来的一种更优的迭代器的生成器的做法--在语言层面引入对`yield`关键字的支持。
 
-根据MDN[2]的解释，当一个生成器被调用时，它并没有一次性执行完(被`yield`给驻留了)，就则会返回生成器-迭代器对象实例。调用返回结果的`next()`方法都会停留在`yield`表达式处，并返回指定的值。而当方法执行到末尾，或者遇到了 `return` 语句时，`StopIteration` 会被自动抛出。因此，我们需要做的就是，给`__iterator__`设置成一个带`yield`的方法就行了（当然没有`yield`也行，视为只有一个元素）。
+根据MDN[2]的解释，当一个依赖于`yield`的生成器被调用时，它内部的代码并没有（必须不能）被直接执行完(被`yield`给驻留了)，就则会返回迭代器对象实例。同大多数现代语言一样，这时候程序的控制权被转交给了调用方。调用方负责调用返回结果的`next()`方法，`next()`方法会停留在下一个`yield`表达式处，并返回指定的值。当生成器方法执行到末尾，或者遇到了 `return` 语句时，`StopIteration` 会被自动抛出。因此，我们需要做的就是，给`__iterator__`设置成一个带`yield`的方法就行了。
 
 > When a generator function is called the body of the function does not execute straight away; instead, it returns a generator-iterator object. Each call to the generator-iterator's next() method will execute the body of the function up to the next yield expression and return its result. When either the end of the function or a return statement is reached, a StopIteration exception is thrown.
 
@@ -248,10 +248,70 @@ for(var v in rng) {
 }
 {% endhighlight %}
 
+#### let与区块内变量
+
+按照MDN[3]中对`let`的解释，它允许你声明只在它所属区块(由一对花括号包含着的语句组成一个区块)、所属语句或者表达式中有效的变量。
+
+>let allows you to declare variables, limiting its scope to the block, statement, or expression on which it is used. This is unlike the var keyword, which defines a variable globally, or locally to an entire function regardless of block scope.
+
+使用`let`声明变量可以有效地解决区块变量与外层变量冲突的问题。通过比较下面的代码，我们就可以看出。
+
+{% highlight js %}
+g = "global";
+(function() {
+	var a = "function";
+	if (true) {
+		let a = "block"; // 仅在 if 内有效
+		var b = "block"; // 在 function 内均有效
+		let g = "block";
+		let c = "block";
+
+		console.log(a); // block
+		console.log(b); // block
+		console.log(g); // block
+		console.log(c); // block
+	}
+	console.log(a); // function
+	console.log(b); // block
+	console.log(g); // global
+	console.log(c); // 抛引用错误
+}());
+{% endhighlight %}
+
+`let`可以通过`let(i=0){}`的形式声明变量`i`并保持该变量的作用域只在`let`区块内。
+
+{% highlight js %}
+(function() {
+	var a = "function";
+	let(a = "block") {
+		console.log(a); // block
+	}
+	console.log(a); // function
+}());
+{% endhighlight %}
+
+`let`也可以用在`for`语句中声明一个或都多个区块变量。但在`for`语句中`var`与`let`不能混用。
+
+{% highlight js %}
+(function() {
+	for(var i = 0; i < 2; k++) {
+	}
+	console.log(i); //2
+
+	for(let j = 0, k = 0; j < 2; j++) {
+		console.log(j); //分别输出 0, 1
+		console.log(k); // 0
+	}
+	console.log(j); //引用错误
+}());
+
+(function(){
+	for(var m = 0, let n = 1; m < 2; m++) { // 语法错误
+	}
+}());
+{% endhighlight %}
 
 #### 数组即元组
-
-#### let 关键字
 
 
 ### JavaScript 1.8 的改进
@@ -260,3 +320,4 @@ for(var v in rng) {
 
 [1]: https://developer.mozilla.org/en-US/docs/JavaScript/New_in_JavaScript/1.7#Generators_and_iterators_(merge_into_Iterators_and_Generators) "Generators and Iterators in JavaScript 1.7"
 [2]: https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Iterators_and_Generators#Generators.3A_a_better_way_to_build_Iterators "Generators: a better way to build Iterators"
+[3]: https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Statements/let#Description "let description"
