@@ -18,7 +18,7 @@ title: Mozilla Firefox 这些年为 JavaScript 的改进做了些什么？
 笔者早期是从接触Prototype开始的，而后由于Prototype篡改原生对象的做法越来越受人诟病，才将其抛弃。而像underscore这种以第三方库的形式(占用一个全局变量)对JavaScript进行扩展的方法，则更能被人所接受。
 总体来说，现在的第三方库与方法，足以支持日常工作的绝大部分需求。
 
-然后比较令人失望的是，在经过了将近8个年头后，JavaScript语言的抽象能力却几乎没有得到任何提升，如今的语法还是当年的语法。这导致了笔者对姿态优雅的[CoffeeScript](http://coffeescript.org/)有着百般好感。
+然而比较令人失望的是，在经过了将近8个年头后，JavaScript语言的抽象能力却几乎没有得到任何提升，如今的语法还是当年的语法。这导致了笔者对姿态优雅的[CoffeeScript](http://coffeescript.org/)有着百般好感。
 
 在上述的改进中，我们看到了大量的社区的身影。而作为JavaScript运行的主要平台，浏览器这一方，除了在提高执行速度外，还对语言本身也做了不少改进，这其中最具代表性的是Firefox。
 
@@ -354,7 +354,7 @@ function f() {
 
 How Pythonic! 我们在JavaScript中可以直接把数组当元组来使用。
 
-当然，我们也得小心，不要被下面代码所迷惑了。
+当然，我们也得小心，不要被下面代码迷惑了。
 
 {% highlight js %}
 a, b = [3, 4]
@@ -378,12 +378,79 @@ console.log(d) // undefined
 
 #### JavaScript 1.7 小结
 
-我们看到，在1.7中，Firefox 为我们提供了更多种优雅的写法，来书写迭代方法，借助`let`使用区块变量，甚至是像使写 Python 代码一样来把数组当元组使用。这些改进，在很大程序上提升了语言的抽象能力。
+我们看到，在1.7中，Firefox 为我们提供了更多种优雅的写法，来书写迭代方法，借助`let`使用区块变量，甚至是像写 Python 代码一样来把数组当元组使用。这些改进，在很大程序上提升了语言的抽象能力。
 
 
 ### JavaScript 1.8 的改进
 
+#### Lambda 表达式 / Expression closure
+
+在1.8版本中，Firefox为我们引进Expression closure，从它的写法，我们一眼就能看出实际上它就是Lambda表达式。
+
+{% highlight js %}
+var isEvenNumberLambda = function(i) i % 2 === 0, // expression closure
+	isEvenNumberTraditional = function(i) { return i % 2 === 0; }; //等价的传统写法
+{% endhighlight %}
+
+#### 迭代器表达式与延迟执行
+
+在前面我们了解了迭代器与生成器。现在我们先修改一下`Range`的`__iterator__`方法，并输出当前正在迭代的元素。
+
+{% highlight js %}
+Range.prototype.__iterator__ = function(){
+	for (var i = this.left; i <= this.right; i++) {
+		console.log(i); // 输出正在迭代的元素
+		yield i;
+	}
+};
+{% endhighlight %}
+
+在1.7版本中，我们可能会按照如下方式来写编写代码。在做double的时候，`rng`内的元素都会被遍历一次。
+
+{% highlight js %}
+(function(){
+	var rng = new Range(1, 5),
+		doubles = [v * 2 for (v in rng)]; // 这个时候__iterator__方法中会输出 1, 2, 3, 4, 5
+	for(var i in doubles) {
+	}
+}());
+{% endhighlight %}
+
+在1.8中，我们可以将代码写成下面的方式。注意比较写法的差异，在赋值给`doubles`的时候，我们使用的`()`，而不是Array comprehension的`[]`。
+并且在赋值的时候，并不会输出`1, 2, 3, 4, 5`，而直到对`doubles`进行遍历的时候，才会将这些元素给输出来。也就是说，真正对`rng`进行遍历的时候，是在对`doubles`进行遍历的时候发生的。而这也正是诸如`C#`等语言所支持的延迟执行特性。
+{% highlight js %}
+(function(){
+	var rng = new Range(1, 5),
+		doubles = (v * 2 for (v in rng));
+	for(var i in doubles) {
+		// 这个时候__iterator__方法中才会输出 1, 2, 3, 4, 5
+	}
+}());
+{% endhighlight %}
+
+#### 1.8中的其它改进
+
+在1.8版本中，还会`Array`引进了`reduce()`与`reduceRight()`方法，这就补齐了`Map-Reduce`的功能。有兴趣的童鞋可以参考文末的链接进行深度阅读。
+
+### 其它改进与支持
+
+当然，上面列举的大部分是对语言的补充与改进，而这几年中，JavaScript社区的声音也相当响亮，也提出过很多令人兴奋的特性。Firefox作为一个成功的社区产品，当对这些声音也做出了积极的配合。比如对`strict`模式的支持，内置`JSON`相关的功能等。
+
 ### 结语
+
+我总是很乐于见到并推动JavaScript语言的发展，Firefox做为这个世界上最成功开源软件之一，为JavaScript的改进做出的贡献让人诚心佩服。总体来说，我们看到了JavaScript变得越来越现代化。就算说它越来越像Python也无所谓，反正Python我个人也挺喜欢的。
+
+我希望JavaScript可以成为一百年后的编程语言。
+
+
+### 参考文献
+
+* [New in JavaScript 1.6](https://developer.mozilla.org/en-US/docs/JavaScript/New_in_JavaScript/1.6)
+* [New in JavaScript 1.7](https://developer.mozilla.org/en-US/docs/JavaScript/New_in_JavaScript/1.7)
+* [New in JavaScript 1.8](https://developer.mozilla.org/en-US/docs/JavaScript/New_in_JavaScript/1.8)
+* [Iterators and generators](https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Iterators_and_Generators)
+* [元组 - 维基百科](http://zh.wikipedia.org/wiki/%E5%A4%9A%E5%85%83%E7%BB%84)
+
 
 [1]: https://developer.mozilla.org/en-US/docs/JavaScript/New_in_JavaScript/1.7#Generators_and_iterators_(merge_into_Iterators_and_Generators) "Generators and Iterators in JavaScript 1.7"
 [2]: https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Iterators_and_Generators#Generators.3A_a_better_way_to_build_Iterators "Generators: a better way to build Iterators"
