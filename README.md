@@ -11,3 +11,4 @@ So many thanks to the following projects:
 
 * [jekyll](https://github.com/mojombo/jekyll) project.
 * [Pygments](http://pygments.org/)
+* [rdiscount](https://github.com/davidfstr/rdiscount)
