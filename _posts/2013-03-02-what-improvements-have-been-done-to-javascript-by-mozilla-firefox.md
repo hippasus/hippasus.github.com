@@ -364,7 +364,7 @@ console.log(b); // 4?
 a, b = b, a;	// swap?
 {% endhighlight %}
 
-在MDC的文档中，提取数组元素的过程，叫做Destructuring assignment。在该过程中，与Python不同的是，JavaScript不要求操作左右两边的数据个数一致。如在Python中`a, b = (3, 4, 5)`会报错，而在JavaScript中则不会，见如下代码:
+在MDN的文档中，提取数组元素的过程，叫做Destructuring assignment。在该过程中，与Python不同的是，JavaScript不要求操作左右两边的数据个数一致。如在Python中`a, b = (3, 4, 5)`会报错，而在JavaScript中则不会，见如下代码:
 
 {% highlight js %}
 [a, b] = [3, 4, 5];
